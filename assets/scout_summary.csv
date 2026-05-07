@@ -1,0 +1,10 @@
+Method,k (mean),Compression %,Test Acc %,Cos Sim (achieved),Angular distortion
+Fixed k=768,768.0,0.0,73.0,—,—
+Fixed k=512,512.0,33.3,71.0,—,—
+Fixed k=128,128.0,83.3,71.0,—,—
+Fixed k=64,64.0,91.7,66.333,—,—
+Fixed k=32,32.0,95.8,52.08,—,—
+Cosine θ=0.999,500.9,34.8,(see plot),0.9991,≤2.6Â°
+Cosine θ=0.99,437.8,43.0,(see plot),0.9901,≤8.1Â°
+Cosine θ=0.95,305.8,60.2,(see plot),0.9507,≤18.2Â°
+Cosine θ=0.9,220.6,71.3,(see plot),0.9015,≤25.8Â°

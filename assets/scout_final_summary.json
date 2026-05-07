@@ -1,0 +1,37 @@
+{
+  "plateau_range": [
+    128,
+    512
+  ],
+  "dynamic_k_summary": [
+    {
+      "theta": 0.999,
+      "mean_k": 500.8813852813853,
+      "median_k": 504.0,
+      "compression_%": 34.78106962481963,
+      "status": "\u2705 inside plateau"
+    },
+    {
+      "theta": 0.99,
+      "mean_k": 437.84886363636366,
+      "median_k": 444.0,
+      "compression_%": 42.98842921401514,
+      "status": "\u2705 inside plateau"
+    },
+    {
+      "theta": 0.95,
+      "mean_k": 305.7883116883117,
+      "median_k": 311.0,
+      "compression_%": 60.18381358225109,
+      "status": "\u2705 inside plateau"
+    },
+    {
+      "theta": 0.9,
+      "mean_k": 220.57770562770563,
+      "median_k": 225.0,
+      "compression_%": 71.27894457972583,
+      "status": "\u2705 inside plateau"
+    }
+  ],
+  "recommended_theta": 0.99
+}
