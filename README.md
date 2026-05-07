@@ -84,15 +84,15 @@ Open `Part-b.ipynb`. Attach the Part-a notebook as a data source so the syntheti
 Open `Master.ipynb`. In the config block (Section 0), set:
 
 ```python
+
+Since cosine-similarity requires a reference;
+Pre-extracted NICO++ CLIP embeddings are available at: 
+https://www.kaggle.com/datasets/khizaryy/baseline-run-outputs/versions/1
+(ensure fetching Version 1 of the dataset and not later versions)
+
+Or if runnign pipeline from scratch, after running baseline on nico_unique
 EMB_DIR = Path("/kaggle/input/<your-part-a-output>/embeddings/nico_unique")
 
-FIXED_K_RESULTS = {
-    768: 73.0,   # full uncompressed baseline
-    512: 71.0,
-    128: 71.0,
-    64:  66.333,
-    32:  52.08,
-}
 ```
 
 Run all cells. All figures and summary artefacts are saved to `/kaggle/working/scout_analysis/`.
