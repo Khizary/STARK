@@ -141,11 +141,13 @@ The analysis uses NICO++ embeddings from 12 object classes: bear, cat, chair, do
 
 The cumulative energy curve, averaged over all 18,480 token vectors, is strongly concave: the top-ranked dimensions account for a disproportionately large fraction of total L2 energy. The 10th–90th percentile band across all token positions is narrow, confirming this concentration is consistent across token positions and caption types. This non-uniformity is the prerequisite for compression being worthwhile: if CLIP energy were uniformly distributed, no threshold-based selector would outperform a random selector.
 
-> **Figure 1** (`assets/energy_curve.png`), Cumulative normalised energy vs. dimensions retained, averaged over all NICO++ tokens, with the 10th–90th percentile band shaded. Horizontal dashed lines mark cosine thresholds θ ∈ {0.90, 0.95, 0.99, 0.999}. The strongly concave shape confirms non-uniformity and motivates adaptive compression. A secondary NICO++ vs. DomainNet overlay shows near-identical curve profiles, supporting cross-dataset threshold transfer.
+![Energy curve](assets/energy_curve.png)
+> **Figure 1**, Cumulative normalised energy vs. dimensions retained, averaged over all NICO++ tokens, with the 10th–90th percentile band shaded. Horizontal dashed lines mark cosine thresholds θ ∈ {0.90, 0.95, 0.99, 0.999}. The strongly concave shape confirms non-uniformity and motivates adaptive compression. A secondary NICO++ vs. DomainNet overlay shows near-identical curve profiles, supporting cross-dataset threshold transfer.
 
 ### SCOUT k distributions
 
-> **Figure 2** (`assets/k_distribution_cosine.png`), Histograms of per-token k values selected by SCOUT at each θ. The spread around the mean illustrates that per-token adaptivity produces a distribution of k values rather than a fixed point, and that more aggressive thresholds (lower θ) shift the distribution left and broaden it.
+![Energy curve](assets/k_distribution_cosine.png)
+> **Figure 2**, Histograms of per-token k values selected by SCOUT at each θ. The spread around the mean illustrates that per-token adaptivity produces a distribution of k values rather than a fixed point, and that more aggressive thresholds (lower θ) shift the distribution left and broaden it.
 
 ### Compression vs. cosine fidelity
 
