@@ -1,23 +1,23 @@
 # STARK: Scalable Top-k Adaptive Reduction Kernel
 
-**CS437/CS5317/EE414/EE513 — Deep Learning, Spring 2026**
-Ali Azhar (27100083) · Muhammad Khizar (28100118)
+**CS437 Deep Learning, Spring 2026**
+Ali Azhar (27100083) | Muhammad Khizar (28100118)
 
 ---
 
 ## Project Overview
 
-Federated learning (FL) trains a shared model across distributed clients without centralising raw data. The canonical protocol, FedAvg, requires many rounds of gradient exchange between clients and a central server, making communication cost the primary bottleneck at scale — particularly when client data is non-IID, which forces additional rounds to correct local model drift.
+Federated learning (FL) trains a shared model across distributed clients without centralising raw data. The canonical protocol, FedAvg, requires many rounds of gradient exchange between clients and a central server, making communication cost the primary bottleneck at scale, particularly when client data is non-IID, which forces additional rounds to correct local model drift.
 
-One-shot federated learning (OSFL) collapses communication to a single round. Recent OSFL methods exploit pre-trained diffusion models to have the server synthesise a shared training set from lightweight client uploads, rather than averaging model weights. OSCAR (Zaland et al., 2026) represents the current state of the art in this line: it eliminates client-side classifier training entirely by having clients run frozen BLIP captioning on their local images, encode the resulting captions through a frozen CLIP text encoder, and upload the 768-dimensional CLIP hidden states to condition Stable Diffusion on the server. Per-client upload drops to approximately 0.03M parameters — 768 floats per category — compared to 11.69M for FedCADO and 4.23M for FedDISC.
+One-shot federated learning (OSFL) collapses communication to a single round. Recent OSFL methods exploit pre-trained diffusion models to have the server synthesise a shared training set from lightweight client uploads, rather than averaging model weights. OSCAR (Zaland et al., 2026) represents the current state of the art in this line: it eliminates client-side classifier training entirely by having clients run frozen BLIP captioning on their local images, encode the resulting captions through a frozen CLIP text encoder, and upload the 768-dimensional CLIP hidden states to condition Stable Diffusion on the server. Per-client upload drops to approximately 0.03M parameters, 768 floats per category, compared to 11.69M for FedCADO and 4.23M for FedDISC.
 
 However, OSCAR's upload cost still scales linearly with client count and label cardinality. A deployment with 500 clients and 200 fine-grained categories requires each client to transmit 153,600 floats, and the server to process 500 × 200 such vectors before generation begins. No prior work has asked whether these conditioning vectors can themselves be compressed.
 
-**STARK** addresses this gap. Its core contribution is **SCOUT** (Scalable Cosine-threshold OUtput Trimmer), an adaptive top-k selector that compresses each CLIP token vector — retaining only the minimum number of dimensions needed to preserve the embedding's *direction* to within a user-specified angular tolerance θ — before transmission. This is the last remaining communication bottleneck in the OSCAR framework at deployment scale, and it requires no changes to the generation or training pipeline: only a structured masking of the conditioning vector prior to upload.
+**STARK** addresses this gap. Its core contribution is **SCOUT** (Scalable Cosine-threshold OUtput Trimmer), an adaptive top-k selector that compresses each CLIP token vector, retaining only the minimum number of dimensions needed to preserve the embedding's *direction* to within a user-specified angular tolerance θ, before transmission. This is the last remaining communication bottleneck in the OSCAR framework at deployment scale, and it requires no changes to the generation or training pipeline: only a structured masking of the conditioning vector prior to upload.
 
 ### Why direction, not magnitude
 
-Stable Diffusion conditions image generation on CLIP hidden states via cross-attention in the U-Net. Cross-attention is scale-invariant with respect to the conditioning vector: a scaled copy of the same embedding produces identical attention weights and therefore identical generation outputs. What matters is the *direction* of the CLIP embedding in R^768, not its L2 norm. Angular distortion — measured by cosine similarity — is therefore the correct compression objective. Energy thresholding (retaining dimensions that account for τ fraction of total L2 energy) is an indirect proxy for this and systematically over-compresses in the regime where direction is preserved but magnitude is not.
+Stable Diffusion conditions image generation on CLIP hidden states via cross-attention in the U-Net. Cross-attention is scale-invariant with respect to the conditioning vector: a scaled copy of the same embedding produces identical attention weights and therefore identical generation outputs. What matters is the *direction* of the CLIP embedding in R^768, not its L2 norm. Angular distortion, measured by cosine similarity, is therefore the correct compression objective. Energy thresholding (retaining dimensions that account for τ fraction of total L2 energy) is an indirect proxy for this and systematically over-compresses in the regime where direction is preserved but magnitude is not.
 
 ---
 
@@ -37,7 +37,7 @@ Stable Diffusion conditions image generation on CLIP hidden states via cross-att
 
 ### `Part-a.ipynb`
 
-Runs the full OSCAR-style preprocessing pipeline. BLIP captions each class's images in zero-shot; the captions are encoded through `clip-vit-large-patch14`, producing hidden states of shape `[N_captions, 77, 768]` — 77 token positions, each a 768-dimensional vector. These are saved per-class as `.npy` files to a persistent output directory. Stable Diffusion then synthesises a class-conditional training dataset from the uncompressed embeddings, which Part-b uses for downstream evaluation.
+Runs the full OSCAR-style preprocessing pipeline. BLIP captions each class's images in zero-shot; the captions are encoded through `clip-vit-large-patch14`, producing hidden states of shape `[N_captions, 77, 768]`, 77 token positions, each a 768-dimensional vector. These are saved per-class as `.npy` files to a persistent output directory. Stable Diffusion then synthesises a class-conditional training dataset from the uncompressed embeddings, which Part-b uses for downstream evaluation.
 
 This notebook is pinned to a stable `diffusers` environment for reproducibility. The SD synthesis step is sensitive to library version and tokeniser behaviour; re-running on a different environment can produce subtly different embeddings that invalidate cross-run comparisons.
 
@@ -71,15 +71,15 @@ The heavy generation step (Part-a) is the computationally dominant phase. The CL
 
 ### Running the pipeline
 
-**Step 1 — Part-a** (embedding generation and SD synthesis)
+**Step 1, Part-a** (embedding generation and SD synthesis)
 
-Open `Part-a.ipynb` on Kaggle. Ensure the OSCAR dataset source is attached. Run all cells. On completion, note the output path for the `embeddings/nico_unique/` directory — this is `EMB_DIR` in subsequent notebooks.
+Open `Part-a.ipynb` on Kaggle. Ensure the OSCAR dataset source is attached. Run all cells. On completion, note the output path for the `embeddings/nico_unique/` directory, this is `EMB_DIR` in subsequent notebooks.
 
-**Step 2 — Part-b** (downstream evaluation)
+**Step 2, Part-b** (downstream evaluation)
 
-Open `Part-b.ipynb`. Attach the Part-a notebook as a data source so the synthetic training data is accessible. Run all cells. Record the fixed-k accuracy values printed at the end — these populate `FIXED_K_RESULTS` in Master.ipynb.
+Open `Part-b.ipynb`. Attach the Part-a notebook as a data source so the synthetic training data is accessible. Run all cells. Record the fixed-k accuracy values printed at the end, these populate `FIXED_K_RESULTS` in Master.ipynb.
 
-**Step 3 — Master** (SCOUT analysis)
+**Step 3, Master** (SCOUT analysis)
 
 Open `Master.ipynb`. In the config block (Section 0), set:
 
@@ -127,7 +127,7 @@ Part-b establishes empirically that test accuracy on NICO++ is flat between k=12
 
 ### 4. Federated communication reduction at scale
 
-At deployment scale with 500 clients and 200 categories, OSCAR transmits 500 × 200 × 768 = 76,800,000 floats per round. At SCOUT's θ=0.99 operating point (mean k≈438), this becomes approximately 500 × 200 × 438 = 43,800,000 floats — a 43% reduction in aggregate upload with cosine fidelity of 0.9901 and mean angular distortion below 8.1°. The reduction scales multiplicatively with client count and label cardinality, making it most valuable precisely where OSCAR's linear scaling is most painful.
+At deployment scale with 500 clients and 200 categories, OSCAR transmits 500 × 200 × 768 = 76,800,000 floats per round. At SCOUT's θ=0.99 operating point (mean k≈438), this becomes approximately 500 × 200 × 438 = 43,800,000 floats, a 43% reduction in aggregate upload with cosine fidelity of 0.9901 and mean angular distortion below 8.1°. The reduction scales multiplicatively with client count and label cardinality, making it most valuable precisely where OSCAR's linear scaling is most painful.
 
 ---
 
@@ -135,17 +135,17 @@ At deployment scale with 500 clients and 200 categories, OSCAR transmits 500 × 
 
 ### Dataset
 
-The analysis uses NICO++ embeddings from 12 object classes: bear, cat, chair, dog, flower, hat, kangaroo, lizard, motorcycle, scooter, shrimp, and train. Each class contributes 20 BLIP-generated captions, yielding 240 total CLIP embeddings of shape `[77, 768]` — 18,480 individual token vectors used in the SCOUT sweep. A secondary DomainNet subset is also analysed to validate threshold transferability across domains.
+The analysis uses NICO++ embeddings from 12 object classes: bear, cat, chair, dog, flower, hat, kangaroo, lizard, motorcycle, scooter, shrimp, and train. Each class contributes 20 BLIP-generated captions, yielding 240 total CLIP embeddings of shape `[77, 768]`, 18,480 individual token vectors used in the SCOUT sweep. A secondary DomainNet subset is also analysed to validate threshold transferability across domains.
 
 ### Energy curve
 
 The cumulative energy curve, averaged over all 18,480 token vectors, is strongly concave: the top-ranked dimensions account for a disproportionately large fraction of total L2 energy. The 10th–90th percentile band across all token positions is narrow, confirming this concentration is consistent across token positions and caption types. This non-uniformity is the prerequisite for compression being worthwhile: if CLIP energy were uniformly distributed, no threshold-based selector would outperform a random selector.
 
-> **Figure 1** (`assets/energy_curve.png`) — Cumulative normalised energy vs. dimensions retained, averaged over all NICO++ tokens, with the 10th–90th percentile band shaded. Horizontal dashed lines mark cosine thresholds θ ∈ {0.90, 0.95, 0.99, 0.999}. The strongly concave shape confirms non-uniformity and motivates adaptive compression. A secondary NICO++ vs. DomainNet overlay shows near-identical curve profiles, supporting cross-dataset threshold transfer.
+> **Figure 1** (`assets/energy_curve.png`), Cumulative normalised energy vs. dimensions retained, averaged over all NICO++ tokens, with the 10th–90th percentile band shaded. Horizontal dashed lines mark cosine thresholds θ ∈ {0.90, 0.95, 0.99, 0.999}. The strongly concave shape confirms non-uniformity and motivates adaptive compression. A secondary NICO++ vs. DomainNet overlay shows near-identical curve profiles, supporting cross-dataset threshold transfer.
 
 ### SCOUT k distributions
 
-> **Figure 2** (`assets/k_distribution_cosine.png`) — Histograms of per-token k values selected by SCOUT at each θ. The spread around the mean illustrates that per-token adaptivity produces a distribution of k values rather than a fixed point, and that more aggressive thresholds (lower θ) shift the distribution left and broaden it.
+> **Figure 2** (`assets/k_distribution_cosine.png`), Histograms of per-token k values selected by SCOUT at each θ. The spread around the mean illustrates that per-token adaptivity produces a distribution of k values rather than a fixed point, and that more aggressive thresholds (lower θ) shift the distribution left and broaden it.
 
 ### Compression vs. cosine fidelity
 
@@ -174,7 +174,7 @@ Results from the SCOUT sweep on the `bear` class embedding (20 captions, 1,540 t
 
 | k | Test accuracy (%) | In plateau? |
 |---|---|---|
-| 768 (uncompressed) | 73.0 | — |
+| 768 (uncompressed) | 73.0 |, |
 | 512 | 71.0 | ✅ |
 | 128 | 71.0 | ✅ |
 | 64 | 66.3 | ❌ |
@@ -182,9 +182,9 @@ Results from the SCOUT sweep on the `bear` class embedding (20 captions, 1,540 t
 
 ### Main result
 
-> **Figure 3** (`assets/scout_main_result.png`) — Fixed-k accuracy curve (blue line) overlaid with vertical dashed lines showing where each SCOUT θ places its mean k. The shaded horizontal band marks the 70–73% accuracy plateau at k ∈ [128, 512]. Each vertical line includes a ±1 std band showing per-token k variation. This is the core paper figure: it shows that θ=0.99 lands inside the plateau with 43% compression and sub-8.1° angular distortion per token.
+> **Figure 3** (`assets/scout_main_result.png`), Fixed-k accuracy curve (blue line) overlaid with vertical dashed lines showing where each SCOUT θ places its mean k. The shaded horizontal band marks the 70–73% accuracy plateau at k ∈ [128, 512]. Each vertical line includes a ±1 std band showing per-token k variation. This is the core paper figure: it shows that θ=0.99 lands inside the plateau with 43% compression and sub-8.1° angular distortion per token.
 
-At θ=0.99, SCOUT selects a mean k of 437.8, which falls inside the empirical accuracy plateau [128, 512], achieves a cosine similarity of 0.9901, and compresses the per-category embedding by 43% relative to the uncompressed baseline. A single threshold value — with no per-dataset tuning of k — automatically reproduces the directional fidelity needed to stay in the high-accuracy region of the k-accuracy curve.
+At θ=0.99, SCOUT selects a mean k of 437.8, which falls inside the empirical accuracy plateau [128, 512], achieves a cosine similarity of 0.9901, and compresses the per-category embedding by 43% relative to the uncompressed baseline. A single threshold value, with no per-dataset tuning of k, automatically reproduces the directional fidelity needed to stay in the high-accuracy region of the k-accuracy curve.
 
 ### Generated artefacts
 
@@ -194,7 +194,7 @@ Master.ipynb saves the following to `/kaggle/working/scout_analysis/`:
 |---|---|
 | `energy_curve.png` | Cumulative energy curve with percentile band and cosine threshold reference lines |
 | `k_distribution_cosine.png` | Per-token k histograms across all θ values |
-| `scout_main_result.png` | Fixed-k accuracy curve with SCOUT overlay — the primary paper figure |
+| `scout_main_result.png` | Fixed-k accuracy curve with SCOUT overlay, the primary paper figure |
 | `scout_summary.csv` | Per-θ table: mean k, median k, std, min, max, compression %, plateau status |
 | `scout_final_summary.json` | Machine-readable report with plateau range, per-θ summary, and recommended θ |
 
