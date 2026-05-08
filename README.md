@@ -15,6 +15,31 @@ Ali Azhar (27100083) | Muhammad Khizar (28100118)
 [![Nico++_B](https://img.shields.io/badge/Kaggle-Part--b%20notebook-20BEFF?logo=kaggle)](https://www.kaggle.com/code/khizaryy/v4baseline-b)
 [![Master](https://img.shields.io/badge/Kaggle-Master%20notebook-20BEFF?logo=kaggle)](https://www.kaggle.com/code/khizaryy/final-master)
 
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Repository Structure](#repository-structure)
+    - [`Part-a.ipynb`](#part-aipynb)
+    - [`Part-b.ipynb`](#part-bipynb)
+    - [`Master.ipynb`](#masteripynb)
+- [Getting Started](#getting-started)
+    - [Environment](#environment)
+    - [Running the pipeline](#running-the-pipeline)
+    - [Dependencies](#dependencies)
+- [Key Innovations](#key-innovations)
+    - [1. Cosine-threshold compression (SCOUT)](#1-cosine-threshold-compression-scout)
+    - [2. Per-token adaptivity](#2-per-token-adaptivity)
+    - [3. The accuracy plateau](#3-the-accuracy-plateau)
+    - [4. Federated communication reduction at scale](#4-federated-communication-reduction-at-scale)
+- [Experimental Results](#experimental-results)
+    - [Dataset](#dataset)
+    - [Energy curve](#energy-curve)
+    - [SCOUT k distributions](#scout-k-distributions)
+    - [Compression vs. cosine fidelity](#compression-vs-cosine-fidelity)
+    - [Main result](#main-result)
+    - [Generated artefacts](#generated-artefacts)
+- [Citations](#citations)
+  
 ## Project Overview
 
 Federated learning (FL) trains a shared model across distributed clients without centralising raw data. The canonical protocol, FedAvg, requires many rounds of gradient exchange between clients and a central server, making communication cost the primary bottleneck at scale, particularly when client data is non-IID, which forces additional rounds to correct local model drift.
