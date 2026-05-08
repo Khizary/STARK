@@ -29,12 +29,12 @@ Stable Diffusion conditions image generation on CLIP hidden states via cross-att
 ├── Part-b.ipynb          # Downstream ResNet training and fixed-k accuracy evaluation
 ├── Master.ipynb          # SCOUT compression analysis and all paper figures
 ├── README.md
-└── assets/
-    ├── energy_curve.png
-    ├── k_distribution_cosine.png
-    └── scout_main_result.png
+├── assets/
+│   ├── energy_curve.png
+│   ├── k_distribution_cosine.png
+│   └── scout_main_result.png
 └── Deliverables/
-    ├── Deliverable_1.ipynb
+    ├── Deliverable_1.pdf
     ├── Deliverable_2.ipynb
     ├── Deliverable_3.ipynb
     └── Deliverable_4.ipynb
