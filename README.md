@@ -9,10 +9,10 @@ Ali Azhar (27100083) | Muhammad Khizar (28100118)
 
 ![Paper](https://img.shields.io/badge/Paper-ICML%202021%20format-7B2D8B)
 ![Dataset](https://img.shields.io/badge/Dataset-NICO++-1D9E75)
-[![Part-a DomainNet](https://img.shields.io/badge/Kaggle-Part--a%20notebook-20BEFF?logo=kaggle)](https://www.kaggle.com/code/khizaryy/part-a-domainnet)
-[![Part-b DomainNet](https://img.shields.io/badge/Kaggle-Part--b%20notebook-20BEFF?logo=kaggle)](https://www.kaggle.com/code/khizaryy/partb-domainnet)
-[![Part-a Nico++](https://img.shields.io/badge/Kaggle-Part--a%20notebook-20BEFF?logo=kaggle)](https://www.kaggle.com/code/khizaryy/v4baseline-a)
-[![Part-b Nico++](https://img.shields.io/badge/Kaggle-Part--b%20notebook-20BEFF?logo=kaggle)](https://www.kaggle.com/code/khizaryy/v4baseline-b)
+[![Part-a-DomainNet](https://img.shields.io/badge/Kaggle-Part--a%20notebook-20BEFF?logo=kaggle)](https://www.kaggle.com/code/khizaryy/part-a-domainnet)
+[![Part-b-DomainNet](https://img.shields.io/badge/Kaggle-Part--b%20notebook-20BEFF?logo=kaggle)](https://www.kaggle.com/code/khizaryy/partb-domainnet)
+[![Part-a-Nico++](https://img.shields.io/badge/Kaggle-Part--a%20notebook-20BEFF?logo=kaggle)](https://www.kaggle.com/code/khizaryy/v4baseline-a)
+[![Part-b-Nico++](https://img.shields.io/badge/Kaggle-Part--b%20notebook-20BEFF?logo=kaggle)](https://www.kaggle.com/code/khizaryy/v4baseline-b)
 [![Master](https://img.shields.io/badge/Kaggle-Master%20notebook-20BEFF?logo=kaggle)](https://www.kaggle.com/code/khizaryy/final-master)
 
 ## Project Overview
