@@ -33,6 +33,11 @@ Stable Diffusion conditions image generation on CLIP hidden states via cross-att
     ├── energy_curve.png
     ├── k_distribution_cosine.png
     └── scout_main_result.png
+└── Deliverables/
+    ├── Deliverable_1.ipynb
+    ├── Deliverable_2.ipynb
+    ├── Deliverable_3.ipynb
+    └── Deliverable_4.ipynb
 ```
 
 ### `Part-a.ipynb`
@@ -85,12 +90,12 @@ Open `Master.ipynb`. In the config block (Section 0), set:
 
 ```python
 
-Since cosine-similarity requires a reference;
-Pre-extracted NICO++ CLIP embeddings are available at: 
-https://www.kaggle.com/datasets/khizaryy/baseline-run-outputs/versions/1
-(ensure fetching Version 1 of the dataset and not later versions)
+# Since cosine-similarity requires a reference;
+# Pre-extracted NICO++ CLIP embeddings are available at: 
+# https://www.kaggle.com/datasets/khizaryy/baseline-run-outputs/versions/1
+# (ensure fetching Version 1 of the dataset and not later versions)
 
-Or if runnign pipeline from scratch, after running baseline on nico_unique
+# Or if runnign pipeline from scratch, after running baseline on nico_unique
 EMB_DIR = Path("/kaggle/input/<your-part-a-output>/embeddings/nico_unique")
 
 ```
@@ -190,7 +195,7 @@ At θ=0.99, SCOUT selects a mean k of 437.8, which falls inside the empirical ac
 
 ### Generated artefacts
 
-Master.ipynb saves the following to `/kaggle/working/scout_analysis/`:
+Master.ipynb saves the following to `/kaggle/working/scout_analysis/` also available in this repo at `/assets/`:
 
 | File | Contents |
 |---|---|
